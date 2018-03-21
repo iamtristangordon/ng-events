@@ -1,0 +1,19 @@
+{
+  "name": "ng-events-server",
+  "version": "1.0.0",
+  "description": "Server for ng-events",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^6.2.1",
+    "body-parser": "^1.13.2",
+    "cors": "^2.8.1",
+    "express": "^4.13.0",
+    "morgan": "^1.8.2",
+    "request": "^2.85.0",
+    "rootpath": "^0.1.2"
+  },
+  "license": "MIT"
+}
