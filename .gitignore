@@ -10,6 +10,9 @@
 /node_modules
 /src/server/node_modules
 
+# unnecessary files (server created)
+/src/server/events.json
+
 # IDEs and editors
 /.idea
 .project
