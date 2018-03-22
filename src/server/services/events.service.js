@@ -1,63 +1,121 @@
 let config = require('config.json');
 let request = require('request');
+let fs = require('fs');
 let service = {};
+let auth = {
+    'user': config.username,
+    'pass': config.password,
+    'sendImmediately': false
+};
+let events;
 
-// Buffer.from(`${config.username}:${config.password}`).toString('base64');
+fs.readFile('events.json', 'utf8', function readFileCallback(err, data){
+    if (err){
+        console.log(err);
+    } else {
+    events = JSON.parse(data);
+}});
 
 service.getEvents = getEvents;
-// service.submitFeedback = submitFeedback;
+service.getMediaById = getMediaById;
+service.getStatusById = getStatusById;
 
 module.exports = service;
- 
+
+
+
 function getEvents() {
     return new Promise(function (resolve, reject) {
-        request.get(`${config.apiRoot}/events`, 
-        {
-            'auth': {
-              'user': config.username,
-              'pass': config.password,
-              'sendImmediately': false
-            }
-        }, function(error, response, body) {
-            console.log("body", body);
-            if (error) {
-                console.log("error", error);
-                reject(error);
-            } else {
-                if (body) {
-                    resolve(JSON.parse(body));
+        if(events) {
+            console.log("SENDING STORED EVENTS!");
+            resolve(events);
+            return;
+        }
+
+        request.get(`${config.apiRoot}/events`,
+            {
+                'auth': auth
+            }, function (error, response, body) {
+                if (error) {
+                    reject(error);
+                    return;
                 } else {
-                    console.log("no body");
-                    reject();
-                }
-            }
-        });
+                    if (body) {
+                        body = {
+                            timeStamp: Date.now(),
+                            events: JSON.parse(body)
+                        };
+
+                        fs.writeFile('events.json', JSON.stringify(body), 'utf8', function(err) {
+                            console.log(err);
+                        });
+
+                        resolve(body);
+                    } else {
+                        reject();
+                    }
+                }   
+            });
     });
 }
 
-// function submitFeedback(emailObj) {
-//     let deferred = Q.defer(),
-//         fromEmail = new helper.Email('feedback@finapp.com'),
-// 	    toEmail = new helper.Email('chale@knowledgebanknashville.org'),
-// 	    subject = "Application Feedback",
-// 	    content = new helper.Content('text/plain', "name: " + emailObj.name + "\n\n" + "message: " + emailObj.message),
-// 	    mail = new helper.Mail(fromEmail, subject, toEmail, content);
+function getMediaById(eventId, mediaId) {
+    return new Promise(function (resolve, reject) {
+        request.get(`${config.apiRoot}/events/${eventId}/media/${mediaId}`,
+            {
+                'auth': auth,
+                'encoding': null
+            }, function (error, response, body) {
+                if (error) {
+                    console.log("service error: ", error);
+                    reject(error);
+                } else {
+                    console.log(body);
+                    if (body) {
+                        resolve(body);
+                    } else {
+                        reject();
+                    }
+                }
+            });
+    });
+}
 
-// 	var sg = require('sendgrid')(process.env.FINAPP_API_KEY || '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');
-// 	var request = sg.emptyRequest({
-// 		method: 'POST',
-// 		path: '/v3/mail/send',
-// 		body: mail.toJSON(),
-// 	});
+function getStatusById(eventId) {
+    return new Promise(function (resolve, reject) {
+        request.get(`${config.apiRoot}/events/${eventId}/status/${config.username}`,
+            {
+                'auth': auth
+            }, function (error, response, body) {
+                if (error) {
+                    reject(error);
+                } else {
+                    if (body) {
+                        resolve(JSON.parse(body));
+                    } else {
+                        reject();
+                    }
+                }
+            });
+    });
+}
 
-// 	sg.API(request, function(error, response) {
-// 		console.log(response.statusCode);
-// 		console.log(response.body);
-// 		console.log(response.headers);
-
-// 		deferred.resolve(response);
-// 	});
-
-//     return deferred.promise;
-// }
-
+function setStatusById(eventId, statusObj) {
+    return new Promise(function (resolve, reject) {
+        request.put(`${config.apiRoot}/events/${eventId}/status/${config.username}`,
+            {
+                'auth': auth,
+                'json': statusObj
+            }, function (error, response, body) {
+                if (error) {
+                    reject(error);
+                } else {
+                    if (body) {
+                        resolve(JSON.parse(body));
+                    } else {
+                        reject();
+                    }
+                }
+            });
+    });
+}
