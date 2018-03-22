@@ -1,10 +1,13 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { trigger, style, animate, transition } from "@angular/animations";
+import { Router } from '@angular/router';
 
-import { Comment } from "../models/comment.model";
 import { EventsService } from "../services/events.service";
 
 import { Subject } from "rxjs";
+import 'rxjs/add/operator/takeUntil';
+
+import { CommonService } from "../services/common.service";
 
 @Component({
     selector: "app-ng-events",
@@ -28,19 +31,21 @@ export class NgEventsComponent implements OnInit {
     public events: any;
     public eventsLastRetrieved: string;
     public showEvents: boolean = false;
-    private colors:string[] = ["e0435e", "ece1ee", "9f80a7", "43061e","0c0000"];
 
-    constructor(private eventsService: EventsService) { }
+    constructor(
+        private eventsService: EventsService,
+        private router: Router,
+        private common: CommonService) { }
 
     ngOnInit() {
         this.getEvents();
     }
 
     getEvents() {
-        this.eventsService.getEvents().subscribe((res) => {
+        this.eventsService.getEvents().takeUntil(this.ngUnsubscribe).subscribe((res) => {
             this.eventsLastRetrieved = new Date(res.timeStamp).toUTCString();
             this.events = res.events;
-            console.log(this.events);
+            
             this.showEvents = true;
         }, error => {
             this.showEvents = true;
@@ -53,25 +58,15 @@ export class NgEventsComponent implements OnInit {
         this.ngUnsubscribe.unsubscribe();
     }
 
-    getUrl(eventId, mediaId) {
-        if(mediaId.includes('/')) {
-            mediaId = encodeURIComponent(mediaId);
-        }
-        let url = `http://localhost:4000/api/media/${eventId}/${mediaId}`;
+    getUrl(eventId: string, mediaId: string): string {
+        return this.common.getUrl(eventId, mediaId);
+    }
 
-        return url;
+    viewEventDetails(eventId) {
+        this.router.navigateByUrl(`event-details/${eventId}`);
     }
 
     updateUrl($event) {
-        $event.target.src = this.randomizeColor("http://via.placeholder.com/350x200");
-    }
-
-    randomizeColor(url: string) {
-        let num = Math.floor(Math.random() * ((5-1)+1) + 1) - 1;
-
-        let color = this.colors[num];
-        
-        return url + "/" + color + "?text=+";
-
+        this.common.updateUrl($event);
     }
 }
