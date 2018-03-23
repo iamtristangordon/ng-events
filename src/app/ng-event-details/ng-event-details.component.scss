@@ -1,5 +1,8 @@
 .container {
 
+    &.button-only {
+        margin: 25px 0;
+    }
     .card-image-container {
         height: 300px;
         text-align: center;

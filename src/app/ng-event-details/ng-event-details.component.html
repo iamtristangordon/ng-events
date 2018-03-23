@@ -1,9 +1,15 @@
 <mat-spinner class="spinner" *ngIf="!showEvent"></mat-spinner>
+<div class="container button-only">
+    <div class="row">
+        <div class="col-sm-12">
+            <div style="margin-bottom: 30px">
+                <button mat-raised-button (click)="goBack()">&larr; Back</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container" *ngIf="showEvent">
     <div *ngIf="selectedEvent" class="row">
-        <div style="margin-bottom: 30px">
-            <button mat-raised-button (click)="goBack()">&larr; Back</button>
-        </div>
         <div class="event col-sm-12">
             <mat-card>
                 <img mat-card-image *ngIf="selectedEvent.images && selectedEvent.images.length > 0" [src]="getUrl(selectedEvent.id, selectedEvent.images[0].id)" (error)="updateUrl($event)">
