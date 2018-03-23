@@ -1,12 +1,15 @@
-.card-image-container {
-    height: 220px;
-    text-align: center;
+.container {
 
-    .card-images {
-        max-width: 170px;
+    .card-image-container {
+        height: 300px;
+        text-align: center;
+
+        .card-images {
+            max-width: 230px;
+        }
     }
-
-    .attendance-text {
-        display: inline-block;
+    mat-spinner {
+        display: inline-block; 
+        margin-left: 5px;
     }
 }

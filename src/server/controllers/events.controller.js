@@ -29,7 +29,7 @@ function getEvents(req, res) {
         })
         .catch(function (err) {
             console.log(err);
-            res.status(400).send(err);
+            res.status(500).send(err);
         });
 }
 
@@ -45,7 +45,8 @@ function getMediaById(req, res) {
             }
         })
         .catch(function (err) {
-            res.status(400).send(err);
+            console.log(err);
+            res.status(500).send(err);
         });
 }
 
@@ -59,7 +60,8 @@ function getStatusById(req, res) {
             }
         })
         .catch(function (err) {
-            res.status(400).send(err);
+            console.log(err);
+            res.status(500).send(err);
         });
 }
 
@@ -73,7 +75,8 @@ function setStatusById(req, res) {
             }
         })
         .catch(function (err) {
-            res.status(400).send(err);
+            console.log(err);
+            res.status(500).send(err);
         });
 }
 
@@ -87,7 +90,8 @@ function getEventById(req, res) {
             }
         })
         .catch(function (err) {
-            res.status(400).send(err);
+            console.log(err);
+            res.status(500).send(err);
         });
 }
 

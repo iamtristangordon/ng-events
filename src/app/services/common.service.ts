@@ -4,6 +4,7 @@ import { Injectable } from "@angular/core";
 
 export class CommonService {
     private colors:string[] = ["e0435e", "ece1ee", "9f80a7", "43061e","0c0000"];
+    
     constructor() { }
 
     updateUrl($event) {

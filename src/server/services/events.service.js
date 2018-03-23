@@ -10,14 +10,6 @@ let auth = {
 let events;
 let eventsMap;
 
-fs.readFile('events.json', 'utf8', function readFileCallback(err, data) {
-    if (err) {
-        console.log(err);
-    } else {
-        events = JSON.parse(data);
-    }
-});
-
 service.getEvents = getEvents;
 service.getMediaById = getMediaById;
 service.getStatusById = getStatusById;
@@ -29,9 +21,10 @@ module.exports = service;
 
 
 function getEvents() {
+    checkForStoredEvents();
+
     return new Promise(function (resolve, reject) {
         if (events && events.events) {
-            console.log("SENDING STORED EVENTS!");
             resolve(events);
             return;
         }
@@ -52,9 +45,11 @@ function getEvents() {
 
                         createEventsMap(body.events);
 
-                        fs.writeFile('events.json', JSON.stringify(body), 'utf8', function (err) {
-                            console.log(err);
-                        });
+                        if(body.events && typeof body.events !== "string") {
+                            fs.writeFile('events.json', JSON.stringify(body), 'utf8', function (err) {
+                                console.log(err);
+                            });
+                        }
 
                         resolve(body);
                     } else {
@@ -73,7 +68,6 @@ function getMediaById(eventId, mediaId) {
                 'encoding': null
             }, function (error, response, body) {
                 if (error) {
-                    console.log("service error: ", error);
                     reject(error);
                 } else {
                     if (body) {
@@ -106,29 +100,37 @@ function getStatusById(eventId) {
 }
 
 function setStatusById(eventId, statusObj) {
-    console.log("Status obj:", { url: `${config.apiRoot}/events/${eventId}/status/${config.username}`, method: 'PUT', auth: auth, json: JSON.stringify(statusObj)});
+    let options = {
+        url: `${config.apiRoot}/events/${eventId}/status/${config.username}`,
+        auth: auth,
+        body: statusObj,
+        json: true,
+        method: 'put'
+    };
 
     return new Promise(function (resolve, reject) {
-        request({ url: `${config.apiRoot}/events/${eventId}/status/${config.username}`, method: 'PUT', auth: auth, json: [JSON.stringify(statusObj)]}, function (error, response, body) {
-                if (error) {
-                    reject(error);
+        request.put(options, function (error, response, body) {
+            console.log(response.statusCode);
+            if (error) {
+                reject(error);
+            } else {
+                if (response.statusCode === 204) {
+                    resolve({message: "Update was successful"});
                 } else {
-                    if (body && typeof(body) !== "string") {
-                        resolve(JSON.parse(body));
-                    } else {
-                        reject("An error occurred");
-                    }
+                    reject("An error occurred");
                 }
-            });
+            }
+        });
     });
 }
 
 function getEventById(eventId) {
-    if (events.events && typeof events.events !== "string" && eventsMap) {
-        console.log("retrieving by map");
+    checkForStoredEvents();
+
+    if (events && eventsMap) {
         let idx = eventsMap[eventId];
         let evt = events.events[idx];
-        console.log("evt by id 2: ", evt);
+
         return new Promise(function (resolve, reject) {
             if (evt) {
                 resolve(evt);
@@ -157,9 +159,11 @@ function getEventById(eventId) {
 
                             createEventsMap(body.events);
 
-                            fs.writeFile('events.json', JSON.stringify(body), 'utf8', function (err) {
-                                console.log(err);
-                            });
+                            if(body.events && typeof body.events !== "string") {
+                                fs.writeFile('events.json', JSON.stringify(body), 'utf8', function (err) {
+                                    console.log(err);
+                                });
+                            }
 
                             let selectedEvent;
 
@@ -169,8 +173,6 @@ function getEventById(eventId) {
                                     break;
                                 }
                             }
-
-                            console.log("evt by id 2: ", selectedEvent);
 
                             resolve(selectedEvent);
                         } else {
@@ -188,6 +190,16 @@ function createEventsMap(arr) {
     for (let i = 0; i < arr.length; ++i) {
         eventsMap[arr[i].id] = i;
     }
+}
 
-    console.log("evtMap: ", eventsMap);
+function checkForStoredEvents() {
+    if (!events) {
+        fs.readFile('events.json', 'utf8', function readFileCallback(err, data) {
+            if (err) {
+                console.log("events.json file has yet to be generate through events request:", err);
+            } else {
+                events = JSON.parse(data);
+            }
+        });
+    }
 }
