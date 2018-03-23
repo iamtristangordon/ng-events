@@ -7,15 +7,12 @@ let bodyParser = require('body-parser');
 let config = require('config.json');
 let morgan = require('morgan');
 let port = process.env.PORT || 4000;
-let posix = require('posix');
 
 app.use(morgan('dev'));
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-posix.setrlimit('nofile', { soft: 10000 });
 
 app.use(function(req, res, next) {
     var contentType = req.headers['content-type'] || ''

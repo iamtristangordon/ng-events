@@ -2,7 +2,7 @@
 <div class="container" *ngIf="showEvents">
     <h3 style="text-align: center; margin-bottom: 30px;" *ngIf="eventsLastRetrieved">Events last retrieved: {{eventsLastRetrieved}}</h3>
     <div *ngIf="events" class="row">
-        <div class="event col-sm-1 col-md-4 col-lg-3" *ngFor="let eventCard of events">
+        <div class="event col-sm-12 col-md-4 col-lg-3" *ngFor="let eventCard of events">
             <mat-card (click)="viewEventDetails(eventCard.id)">
                 <img mat-card-image *ngIf="eventCard.image" [src]="getUrl(eventCard.id, eventCard?.image.id)" (error)="updateUrl($event)">
                 <img mat-card-image *ngIf="!eventCard.image" src="http://via.placeholder.com/350x200?text=+">

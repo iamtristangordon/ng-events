@@ -2,13 +2,13 @@ import { Component, OnInit, Input } from "@angular/core";
 import { trigger, style, animate, transition } from "@angular/animations";
 import { Router } from '@angular/router';
 
-import { EventsService } from "../services/events.service";
-
 import { Subject } from "rxjs";
 import 'rxjs/add/operator/takeUntil';
 
 import { CommonService } from "../services/common.service";
 import { AlertService } from "../services/alert.service";
+import { EventsService } from "../services/events.service";
+import { EventsRequestResult } from '../models/events-request-result.model';
 
 @Component({
     selector: "app-ng-events",
@@ -44,7 +44,7 @@ export class NgEventsComponent implements OnInit {
     }
 
     getEvents() {
-        this.eventsService.getEvents().takeUntil(this.ngUnsubscribe).subscribe((res) => {
+        this.eventsService.getEvents().takeUntil(this.ngUnsubscribe).subscribe((res: EventsRequestResult) => {
             this.eventsLastRetrieved = new Date(res.timeStamp).toUTCString();
             this.events = res.events;
             
@@ -52,7 +52,6 @@ export class NgEventsComponent implements OnInit {
         }, error => {
             this.alert.error("The events could not be retrieved at this time.");
             this.showEvents = true;
-            console.log(error);
         });
     }
 

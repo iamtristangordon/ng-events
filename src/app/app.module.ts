@@ -2,7 +2,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
-import { MatInputModule, MatCardModule, MatProgressSpinnerModule, MatCheckboxModule } from "@angular/material";
+import { MatInputModule, MatCardModule, MatProgressSpinnerModule, MatCheckboxModule, MatButtonModule } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { NgEventsRoutingModule } from "./ng-events-routing.module";
@@ -32,7 +32,8 @@ import { AlertService } from "./services/alert.service";
         MatCardModule,
         FormsModule,
         MatProgressSpinnerModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatButtonModule
     ],
     providers: [
         EventsService,

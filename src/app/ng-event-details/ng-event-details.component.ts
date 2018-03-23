@@ -1,8 +1,11 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { EventsService } from '../services/events.service';
 import { CommonService } from '../services/common.service';
+import { Event } from '../models/event.model';
+import { Status } from '../models/status.model';
 
 import { Subject } from "rxjs";
 import 'rxjs/add/operator/takeUntil';
@@ -20,9 +23,9 @@ export class NgEventDetailsComponent implements OnInit {
     private subscription: any;
     public showEvent: boolean = false;
     showAttendingSpinner: boolean = false;
-    public selectedEvent;
+    public selectedEvent: Event;
     private ngUnsubscribe: Subject<void> = new Subject<void>();
-    private statusModel = {
+    private statusModel: Status = {
         coming: false
     };
 
@@ -31,7 +34,8 @@ export class NgEventDetailsComponent implements OnInit {
         private route: ActivatedRoute,
         private common: CommonService,
         private changeDetectorRef: ChangeDetectorRef,
-        private alert: AlertService) { }
+        private alert: AlertService,
+        private location: Location) { }
 
     ngOnInit() {
         this.subscription = this.route.paramMap
@@ -43,15 +47,17 @@ export class NgEventDetailsComponent implements OnInit {
             });
     }
 
+    goBack() {
+        this.location.back();
+    }
+
     getEventById() {
-        this.eventsService.getEventById(this.eventId).takeUntil(this.ngUnsubscribe).subscribe((res) => {
-            console.log(res);
+        this.eventsService.getEventById(this.eventId).takeUntil(this.ngUnsubscribe).subscribe((res: Event) => {
             this.selectedEvent = res;
 
             this.showEvent = true;
             this.getStatusById();
         }, error => {
-            console.log(error);
             this.showEvent = true;
 
             this.alert.error("The event could not be retrieved at this time.");
@@ -61,17 +67,13 @@ export class NgEventDetailsComponent implements OnInit {
     getStatusById() {
         this.eventsService.getStatusById(this.eventId)
             .retryWhen(error => error.delay(1000))
-            .subscribe((res) => {
+            .subscribe((res: Status) => {
                 if (typeof (res.coming) === "boolean") {
-                    this.statusModel.coming = res.coming;
-                } else {
-                    this.alert.error("Your attendance status could not be retrieved at this time.");
+                    this.statusModel = res;
                 }
 
-                console.log(res);
                 if (this.showAttendingSpinner) this.showAttendingSpinner = false;
             }, error => {
-                console.log(error);
                 if (this.showAttendingSpinner) this.showAttendingSpinner = false;
             });
     }
@@ -85,11 +87,9 @@ export class NgEventDetailsComponent implements OnInit {
         this.eventsService.setStatusById(this.eventId, this.statusModel)
             .retryWhen(error => error.delay(1000))
             .subscribe((res) => {
-                console.log(res);
                 this.alert.success("Your attendance status has been updated.");
                 this.showAttendingSpinner = false;
             }, error => {
-                console.log(error);
                 this.alert.error("Your attendance status could not be updated at this time.");
                 this.showAttendingSpinner = false;
             });

@@ -45,6 +45,7 @@ function getMediaById(req, res) {
             }
         })
         .catch(function (err) {
+            console.log(err);
             res.status(500).send(err);
         });
 }
@@ -59,6 +60,7 @@ function getStatusById(req, res) {
             }
         })
         .catch(function (err) {
+            console.log(err);
             res.status(500).send(err);
         });
 }
@@ -88,6 +90,7 @@ function getEventById(req, res) {
             }
         })
         .catch(function (err) {
+            console.log(err);
             res.status(500).send(err);
         });
 }

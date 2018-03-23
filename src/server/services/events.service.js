@@ -25,7 +25,6 @@ function getEvents() {
 
     return new Promise(function (resolve, reject) {
         if (events && events.events) {
-            console.log("SENDING STORED EVENTS!");
             resolve(events);
             return;
         }
@@ -101,7 +100,6 @@ function getStatusById(eventId) {
 }
 
 function setStatusById(eventId, statusObj) {
-    console.log(statusObj);
     let options = {
         url: `${config.apiRoot}/events/${eventId}/status/${config.username}`,
         auth: auth,
@@ -115,10 +113,7 @@ function setStatusById(eventId, statusObj) {
             console.log(response.statusCode);
             if (error) {
                 reject(error);
-                console.log(response.statusCode);
-                console.log(response.body);
             } else {
-                console.log(body);
                 if (response.statusCode === 204) {
                     resolve({message: "Update was successful"});
                 } else {
@@ -130,10 +125,12 @@ function setStatusById(eventId, statusObj) {
 }
 
 function getEventById(eventId) {
+    checkForStoredEvents();
+
     if (events && eventsMap) {
-        console.log("retrieving by map");
         let idx = eventsMap[eventId];
         let evt = events.events[idx];
+
         return new Promise(function (resolve, reject) {
             if (evt) {
                 resolve(evt);
@@ -193,8 +190,6 @@ function createEventsMap(arr) {
     for (let i = 0; i < arr.length; ++i) {
         eventsMap[arr[i].id] = i;
     }
-
-    console.log("evtMap: ", eventsMap);
 }
 
 function checkForStoredEvents() {
