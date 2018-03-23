@@ -9,6 +9,7 @@ let path = require('path');
 router.get('/events', getEvents);
 router.get('/media/:eventId/:mediaId*', getMediaById);
 router.get('/status/:eventId', getStatusById);
+router.get('/event/:eventId', getEventById);
 router.put('/status/:eventId', setStatusById);
  
 module.exports = router;
@@ -18,7 +19,6 @@ function getEvents(req, res) {
     eventsService.getEvents()
         .then(function (eventsObj) {
             if (eventsObj) {
-                console.log(eventsObj)
                 eventsObj = duplicate(eventsObj);
 
                 eventsObj.events = mapEvents(eventsObj.events);
@@ -77,14 +77,26 @@ function setStatusById(req, res) {
         });
 }
 
+function getEventById(req, res) {
+    eventsService.getEventById(req.params.eventId)
+        .then(function (singleEvent){
+            if (singleEvent) {
+                res.send(singleEvent)
+            } else {
+                res.status(404).send('Request was unsucessful. Event not found.');
+            }
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
 function mapEvents(arr) {
-    // arr.forEach(element => {
-    //     console.log(element.images);
-    // });
-    return arr.map(function(e, index) {
+    if(arr.constructor !== Array) return arr;
+
+    return arr.map(function(e) {
 
         let newEvt = {
-            index: index,
             id: e.id,
             name: e.name,
             location: e.location,

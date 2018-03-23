@@ -2,7 +2,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
-import { MatInputModule, MatIconModule, MatButtonModule, MatCardModule, MatProgressSpinnerModule } from "@angular/material";
+import { MatInputModule, MatCardModule, MatProgressSpinnerModule, MatCheckboxModule } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { AppComponent } from "./app.component";
@@ -11,6 +11,7 @@ import { EventsService } from "./services/events.service";
 import { NgEventsRoutingModule } from "./ng-events-routing.module";
 import { TruncateTextPipe } from "./pipes/truncate-text.pipe";
 import { NgEventDetailsComponent } from './ng-event-details/ng-event-details.component';
+import { CommonService } from "./services/common.service";
 
 
 @NgModule({
@@ -25,15 +26,14 @@ import { NgEventDetailsComponent } from './ng-event-details/ng-event-details.com
         BrowserModule,
         BrowserAnimationsModule,
         NgEventsRoutingModule,
-        MatInputModule,
-        MatIconModule,
-        MatButtonModule,
         MatCardModule,
         FormsModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatCheckboxModule
     ],
     providers: [
-        EventsService
+        EventsService,
+        CommonService
     ],
     bootstrap: [AppComponent]
 })
