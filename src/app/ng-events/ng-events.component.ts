@@ -8,6 +8,7 @@ import { Subject } from "rxjs";
 import 'rxjs/add/operator/takeUntil';
 
 import { CommonService } from "../services/common.service";
+import { AlertService } from "../services/alert.service";
 
 @Component({
     selector: "app-ng-events",
@@ -35,7 +36,8 @@ export class NgEventsComponent implements OnInit {
     constructor(
         private eventsService: EventsService,
         private router: Router,
-        private common: CommonService) { }
+        private common: CommonService,
+        private alert: AlertService) { }
 
     ngOnInit() {
         this.getEvents();
@@ -48,6 +50,7 @@ export class NgEventsComponent implements OnInit {
             
             this.showEvents = true;
         }, error => {
+            this.alert.error("The events could not be retrieved at this time.");
             this.showEvents = true;
             console.log(error);
         });

@@ -5,13 +5,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatInputModule, MatCardModule, MatProgressSpinnerModule, MatCheckboxModule } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
-import { AppComponent } from "./app.component";
-import { NgEventsComponent } from "./ng-events/ng-events.component";
-import { EventsService } from "./services/events.service";
 import { NgEventsRoutingModule } from "./ng-events-routing.module";
 import { TruncateTextPipe } from "./pipes/truncate-text.pipe";
+import { AppComponent } from "./app.component";
+import { NgEventsComponent } from "./ng-events/ng-events.component";
 import { NgEventDetailsComponent } from './ng-event-details/ng-event-details.component';
+import { NgAlertComponent } from "./ng-alert/ng-alert.component";
+import { EventsService } from "./services/events.service";
 import { CommonService } from "./services/common.service";
+import { AlertService } from "./services/alert.service";
 
 
 @NgModule({
@@ -19,7 +21,8 @@ import { CommonService } from "./services/common.service";
         AppComponent,
         NgEventsComponent,
         TruncateTextPipe,
-        NgEventDetailsComponent
+        NgEventDetailsComponent,
+        NgAlertComponent
     ],
     imports: [
         HttpClientModule,
@@ -33,7 +36,8 @@ import { CommonService } from "./services/common.service";
     ],
     providers: [
         EventsService,
-        CommonService
+        CommonService,
+        AlertService
     ],
     bootstrap: [AppComponent]
 })

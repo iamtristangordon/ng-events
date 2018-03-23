@@ -1,0 +1,9 @@
+<div 
+    *ngIf="message && show" 
+    [@enterAnimation]="show" 
+    [class]="'alert ' + (message.type == 'error' ? 'alert-danger' : 'alert-success')">
+    <div style="margin: 15px;">{{message.text}}</div>
+    <div (click)="hideAlert()" class="alert-close">
+        <span class="fa fa-remove" aria-hidden="true"></span>
+    </div>
+</div>

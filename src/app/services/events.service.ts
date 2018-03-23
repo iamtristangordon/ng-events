@@ -21,7 +21,7 @@ export class EventsService {
         return this.http.get(`${this.url}/status/${eventId}`);
     }
 
-    setStatusById(eventId, statusModel) {
+    setStatusById(eventId: string, statusModel) {
         return this.http.put(`${this.url}/status/${eventId}`, statusModel);
     }
 }

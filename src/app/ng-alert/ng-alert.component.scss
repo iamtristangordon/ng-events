@@ -1,0 +1,41 @@
+.alert {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 10%;
+    padding: 0;
+    margin: 15px auto 0;
+    border-radius: 3px;
+    border: none;
+    width: 80%;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    will-change: max-height;
+    font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23) !important;
+
+    .alert-close {
+        font-size: 22px;
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 10px 20px;
+        height: 54px;
+        cursor: pointer;
+        opacity: 0.7;
+    }
+
+    .alert-close:hover {
+        opacity: 1;
+    }
+
+    &.alert-danger {
+        background: #e25661;
+    }
+
+    &.alert-success {
+        background: #58D996;
+    }
+}
