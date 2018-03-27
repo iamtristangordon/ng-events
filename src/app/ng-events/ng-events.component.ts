@@ -9,6 +9,7 @@ import { CommonService } from "../services/common.service";
 import { AlertService } from "../services/alert.service";
 import { EventsService } from "../services/events.service";
 import { EventsRequestResult } from '../models/events-request-result.model';
+import { FrontPageEvent } from '../models/front-page-event.model';
 
 @Component({
     selector: "app-ng-events",
@@ -29,7 +30,7 @@ import { EventsRequestResult } from '../models/events-request-result.model';
 })
 export class NgEventsComponent implements OnInit {
     private ngUnsubscribe: Subject<void> = new Subject<void>();
-    public events: any;
+    public events: FrontPageEvent[];
     public eventsLastRetrieved: string;
     public showEvents: boolean = false;
 

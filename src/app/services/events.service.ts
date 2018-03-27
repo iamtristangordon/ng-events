@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { Response } from "@angular/http";
 
 import { Observable } from "rxjs";
 
@@ -14,16 +15,16 @@ export class EventsService {
     
     constructor(private http: HttpClient) { }
 
-    public getEvents(): Observable<any> {
-        return this.http.get(`${this.url}/events/`);
+    public getEvents(): Observable<EventsRequestResult> {
+        return this.http.get<EventsRequestResult>(`${this.url}/events/`);
     }
 
-    public getEventById(eventId: string) {
-        return this.http.get(`${this.url}/event/${eventId}`);
+    public getEventById(eventId: string): Observable<Event> {
+        return this.http.get<Event>(`${this.url}/event/${eventId}`);
     }
 
-    public getStatusById(eventId): Observable<any> {
-        return this.http.get(`${this.url}/status/${eventId}`);
+    public getStatusById(eventId): Observable<Status> {
+        return this.http.get<Status>(`${this.url}/status/${eventId}`);
     }
 
     setStatusById(eventId: string, statusModel) {
